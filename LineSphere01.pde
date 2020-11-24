@@ -7,11 +7,11 @@ ArrayList<Strip> pos = new ArrayList<Strip>();
 
 void setup()
 {
-  size(800, 800, OPENGL);
+  size(500, 500, OPENGL);
   background(255);
   stroke(0);
   noFill();
-  //frameRate(10);
+  frameRate(60);
   //translate(width, height);
 }
 
@@ -34,10 +34,12 @@ void draw()
   drawBackground();
   //directionalLight(0, 255, 0, 0, .5, -1);
   translate(width/2, height/2, 0);
-  rotateX(frameCount * .03);
-  //rotateY(frameCount * .02);
-  rotateZ(frameCount * .01);
-
+  
+  int repeat = frameCount%(60*6);
+  float rotZ = map(repeat, 0, 60*6, 0, 2 * PI);
+  rotateX(rotZ);
+  rotateY(rotZ);
+  
   colorMode(HSB);
   s = (s+12)%360;
   t = (t+3)%360;
@@ -47,9 +49,21 @@ void draw()
   float radS = radians(s);
   float radT = radians(t);
   //座標を計算
+  pushMatrix();
+  //rotateX(frameCount * .03);
   float thisx = 0 + (radius * cos(radS) * sin(radT));
   float thisz = 0 + (radius * sin(radS) * sin(radT));
   float thisy = 0 + (radius * cos(radT));
+  PMatrix3D mat = new PMatrix3D(thisx, thisy, thisz, 0, 0, 0);
+  //mat.rotateZ(frameCount * .03);
+  //mat.rotateX(frameCount * .03);
+  //mat.rotateY(frameCount * .02);
+  thisx = mat.m00;
+  thisy = mat.m01;
+  thisz = mat.m02;
+  
+  popMatrix();
+  
   pos.add(new Strip(thisx, thisy, thisz, hue));
   if (pos.size() > 300)  pos.remove(0);
 
@@ -58,6 +72,7 @@ void draw()
   line(0, 0, 0, thisx, thisy, thisz);
   fill(hue, 70, 200);
   sphere(50);
+  
   pushMatrix();
   translate(thisx, thisy, thisz);
   sphere(4);
