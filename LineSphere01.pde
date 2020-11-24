@@ -42,25 +42,27 @@ void draw()
   colorMode(HSB);
   int sat = 70;
   int bri = 200;
-  //s = (s+12)%360;
+  s = (s+12)%360;
   //t = (t+3)%360;
   t = map(repeat, 0, max, 0, 360);
   float hue = map(t, 0, 360, 0, 255);
   
   //角度を計算
   float radT = radians(t);
-  s = (s + 6 + sin(radT) * 6)%360; 
+  //s = (s + 6 + sin(radT) * 6)%360; 
   float radS = radians(s);
+  radT = PI/2.;
   //座標を計算
   pushMatrix();
   //rotateX(frameCount * .03);
   float thisx = 0 + (radius * cos(radS) * sin(radT));
   float thisz = 0 + (radius * sin(radS) * sin(radT));
-  float thisy = 0 + (radius * cos(radT));
+  //float thisy = 0 + (radius * cos(radT));
+  float thisy = 0;
   PMatrix3D mat = new PMatrix3D(thisx, thisy, thisz, 0, 0, 0);
-  //mat.rotateZ(frameCount * .03);
+  mat.rotateZ(frameCount * .06);
   //mat.rotateX(frameCount * .03);
-  //mat.rotateY(frameCount * .02);
+  mat.rotateY(frameCount * .02);
   thisx = mat.m00;
   thisy = mat.m01;
   thisz = mat.m02;
