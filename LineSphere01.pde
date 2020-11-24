@@ -1,13 +1,13 @@
 import processing.opengl.*;
 
-int radius = 100;
+int radius = 150;
 float s = 0;
 float t = 0;
 ArrayList<Strip> pos = new ArrayList<Strip>();
 
 void setup()
 {
-  size(500, 500, OPENGL);
+  size(720, 720, OPENGL);
   background(255);
   stroke(0);
   noFill();
@@ -35,51 +35,48 @@ void draw()
   translate(width/2, height/2, 0);
   int max = 60 * 6;
   int repeat = frameCount%(max);
-  float rotZ = map(repeat, 0, max, 0, 2 * PI);
-  rotateX(rotZ);
-  //rotateY(rotZ);
+  float rot = map(repeat, 0, max, 0, 2 * PI);
+  rotateX(rot);
+  //rotateY(rot);
   
   colorMode(HSB);
   int sat = 70;
   int bri = 200;
-  s = (s+12)%360;
-  //t = (t+3)%360;
+  //s = (s+12)%360;
+  s = rot * 12;
   t = map(repeat, 0, max, 0, 360);
-  float hue = map(t, 0, 360, 0, 255);
+  float hue = map(repeat, 0, max, 0, 255);
   
   //角度を計算
-  float radT = radians(t);
-  //s = (s + 6 + sin(radT) * 6)%360; 
-  float radS = radians(s);
-  radT = PI/2.;
+  float radS = rot * 12;
+  float radT = PI/2.;
+  
   //座標を計算
-  pushMatrix();
-  //rotateX(frameCount * .03);
   float thisx = 0 + (radius * cos(radS) * sin(radT));
   float thisz = 0 + (radius * sin(radS) * sin(radT));
-  //float thisy = 0 + (radius * cos(radT));
-  float thisy = 0;
+  float thisy = 0 + (radius * cos(radT));
+  
+  //座標を回転
   PMatrix3D mat = new PMatrix3D(thisx, thisy, thisz, 0, 0, 0);
-  mat.rotateZ(frameCount * .06);
-  //mat.rotateX(frameCount * .03);
-  mat.rotateY(frameCount * .02);
+  mat.rotateZ(rot*3);
+  mat.rotateX(rot*0);
+  mat.rotateY(rot*1);
   thisx = mat.m00;
   thisy = mat.m01;
   thisz = mat.m02;
   
-  popMatrix();
   
   pos.add(new Strip(thisx, thisy, thisz, hue));
   if (pos.size() > 50)  pos.remove(0);
 
   stroke(hue, sat, bri);
-  strokeWeight(3);
+  strokeWeight(4.5);
   line(0, 0, 0, thisx, thisy, thisz);
   line(0, 0, 0, -thisx, -thisy, -thisz);
   fill(hue, sat, bri);
-  sphere(50);
+  sphere(75);
   
-  int tip = 4;
+  int tip = 6;
   pushMatrix();
   translate(thisx, thisy, thisz);
   sphere(tip);
@@ -90,7 +87,7 @@ void draw()
   sphere(tip);
   popMatrix();
   
-  float linewidth = 10;
+  float linewidth = 15;
   noFill();
   beginShape();
   for (int i = pos.size()-1; i >= 0; i--)
