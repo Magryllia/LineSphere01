@@ -32,22 +32,25 @@ void drawBackground()
 void draw()
 {
   drawBackground();
-  //directionalLight(0, 255, 0, 0, .5, -1);
   translate(width/2, height/2, 0);
-  
-  int repeat = frameCount%(60*6);
-  float rotZ = map(repeat, 0, 60*6, 0, 2 * PI);
+  int max = 60 * 6;
+  int repeat = frameCount%(max);
+  float rotZ = map(repeat, 0, max, 0, 2 * PI);
   rotateX(rotZ);
-  rotateY(rotZ);
+  //rotateY(rotZ);
   
   colorMode(HSB);
-  s = (s+12)%360;
-  t = (t+3)%360;
+  int sat = 70;
+  int bri = 200;
+  //s = (s+12)%360;
+  //t = (t+3)%360;
+  t = map(repeat, 0, max, 0, 360);
   float hue = map(t, 0, 360, 0, 255);
   
   //角度を計算
-  float radS = radians(s);
   float radT = radians(t);
+  s = (s + 6 + sin(radT) * 6)%360; 
+  float radS = radians(s);
   //座標を計算
   pushMatrix();
   //rotateX(frameCount * .03);
@@ -65,34 +68,47 @@ void draw()
   popMatrix();
   
   pos.add(new Strip(thisx, thisy, thisz, hue));
-  if (pos.size() > 300)  pos.remove(0);
+  if (pos.size() > 50)  pos.remove(0);
 
-  stroke(hue, 70, 200);
+  stroke(hue, sat, bri);
   strokeWeight(3);
   line(0, 0, 0, thisx, thisy, thisz);
-  fill(hue, 70, 200);
+  line(0, 0, 0, -thisx, -thisy, -thisz);
+  fill(hue, sat, bri);
   sphere(50);
   
+  int tip = 4;
   pushMatrix();
   translate(thisx, thisy, thisz);
-  sphere(4);
+  sphere(tip);
   popMatrix();
   
-  //ellipse(0, 0, 50, 50);
-
+  pushMatrix();
+  translate(-thisx, -thisy, -thisz);
+  sphere(tip);
+  popMatrix();
+  
+  float linewidth = 10;
   noFill();
   beginShape();
-  //float w = 8;
-  float alpha = 255;
   for (int i = pos.size()-1; i >= 0; i--)
   {
-    float w = map(i, pos.size()-1, 0, 8, 0);
+    float w = map(i, pos.size()-1, 0, linewidth, 0);
     Strip p = pos.get(i);
     strokeWeight(w);
-    stroke(p.hue, 70, 200);
-    strokeCap(ROUND);
-    vertex(p.x, p.y, p.z);
-    
+    stroke(p.hue, sat, bri);
+    curveVertex(p.x, p.y, p.z);
+  }
+  endShape();
+  
+  beginShape();
+  for (int i = pos.size()-1; i >= 0; i--)
+  {
+    float w = map(i, pos.size()-1, 0, linewidth, 0);
+    Strip p = pos.get(i);
+    strokeWeight(w);
+    stroke(p.hue, sat, bri);
+    curveVertex(-p.x, -p.y, -p.z);
   }
   endShape();
   
