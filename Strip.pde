@@ -12,6 +12,7 @@ class Strip
     hue = _hue;
   }
   
+  //中央から遠ざかっていく
   void updatePos()
   {
     PVector pos = new PVector(x, y, z);
