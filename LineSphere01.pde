@@ -114,4 +114,9 @@ void draw()
   {
     p.updatePos();
   }
+  
+  if(60 < frameCount && frameCount < 360+60)
+  {
+    save("frames/" + String.format("%04d",(frameCount-60)) +".png");
+  }
 }
