@@ -20,7 +20,7 @@ void drawBackground()
   for (int h = 0; h <= height; h++)
   {
     colorMode(HSB);
-    color c = lerpColor(#fdfcfb, #e2d1c3, (float)h/width);
+    color c = lerpColor(#fdfcfb, #e2d1c3, (float)h/height);
     stroke(c);
     line(0, h, width, h);
   }
@@ -66,19 +66,19 @@ void draw()
   int length = 50;
   if (pos.size() > length)  pos.remove(0);
 
+  //中心線
   stroke(hue, sat, bri);
   strokeWeight(4.5);
   line(-thisx, -thisy, -thisz, thisx, thisy, thisz);
   fill(hue, sat, bri);
   sphere(75);
   
-  //中心線の描画
+  //先端の球
   int tip = 6;
   pushMatrix();
   translate(thisx, thisy, thisz);
   sphere(tip);
   popMatrix();
-
   pushMatrix();
   translate(-thisx, -thisy, -thisz);
   sphere(tip);
